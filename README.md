@@ -205,3 +205,4 @@ Smoke-тесты:
 
 ___
 git checkout -b task#1139
+//moc error
