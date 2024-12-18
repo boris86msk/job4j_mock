@@ -105,7 +105,8 @@
                                 </small>
                             </td>
                             <td>
-                                <span class="badge bg-success">Новых: 100</span>
+                                <span class="badge bg-success" th:text="${'Новых ' +
+                                 interviews.get(category.id).getTotalElements()}"></span>
                             </td>
                         </tr>
                         </tbody>
