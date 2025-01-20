@@ -2,9 +2,11 @@ package ru.checkdev.notification.telegram;
 
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.checkdev.notification.telegram.action.Action;
+import ru.checkdev.notification.telegram.component.Buttons;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -43,11 +45,12 @@ public class BotMenu extends TelegramLongPollingBot {
     public void onUpdateReceived(Update update) {
         if (update.hasMessage()) {
             var key = update.getMessage().getText();
-            var chatId = update.getMessage().getChatId().toString();
+            var chatId = update.getMessage().getChatId();
+            var userName = update.getMessage().getFrom().getFirstName();
             if (actions.containsKey(key)) {
                 var msg = actions.get(key).handle(update.getMessage());
-                bindingBy.put(chatId, key);
-                send(msg);
+                bindingBy.put(chatId.toString(), key);
+                send(getDefaultMessage(chatId, userName));
             } else if (bindingBy.containsKey(chatId)) {
                 var msg = actions.get(bindingBy.get(chatId)).callback(update.getMessage());
                 bindingBy.remove(chatId);
@@ -62,5 +65,13 @@ public class BotMenu extends TelegramLongPollingBot {
         } catch (TelegramApiException e) {
             e.printStackTrace();
         }
+    }
+
+    private SendMessage getDefaultMessage(long chatId, String userName) {
+        SendMessage message = new SendMessage();
+        message.setChatId(chatId);
+        message.setText("Привет, " + userName + "! тебе доступны следующие команды:");
+        message.setReplyMarkup(Buttons.inlineMarkup());
+        return message;
     }
 }
