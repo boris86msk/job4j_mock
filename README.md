@@ -204,3 +204,5 @@ Smoke-тесты:
 - Notification сервис - http://localhost:9920/swagger-ui/index.html
 
 ___
+git checkout -b task#1139
+//moc error

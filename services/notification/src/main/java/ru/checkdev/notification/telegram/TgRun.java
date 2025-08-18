@@ -21,7 +21,7 @@ import java.util.Map;
  * username = берем из properties
  * token = берем из properties
  *
- * @author Dmitry Stepanov, user Dmitry
+ * @author Dmitry Stepanov, user Boris
  * @since 12.09.2023
  */
 @Component
@@ -42,8 +42,7 @@ public class TgRun {
     @Bean
     public void initTg() {
         Map<String, Action> actionMap = Map.of(
-                "/start", new InfoAction(List.of(
-                        "/start", "/new")),
+                "/start", new InfoAction(List.of("/start", "/new", "/check")),
                 "/new", new RegAction(tgAuthCallWebClint, urlSiteAuth)
         );
         try {

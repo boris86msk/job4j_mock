@@ -2,6 +2,7 @@ package ru.checkdev.notification.telegram;
 
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import ru.checkdev.notification.telegram.action.Action;
@@ -44,12 +45,14 @@ public class BotMenu extends TelegramLongPollingBot {
         if (update.hasMessage()) {
             var key = update.getMessage().getText();
             var chatId = update.getMessage().getChatId().toString();
+            var userName = update.getMessage().getFrom().getFirstName();
             if (actions.containsKey(key)) {
                 var msg = actions.get(key).handle(update.getMessage());
                 bindingBy.put(chatId, key);
                 send(msg);
             } else if (bindingBy.containsKey(chatId)) {
-                var msg = actions.get(bindingBy.get(chatId)).callback(update.getMessage());
+                Action action = actions.get(bindingBy.get(chatId));
+                var msg = action.callback(update.getMessage());
                 bindingBy.remove(chatId);
                 send(msg);
             }
