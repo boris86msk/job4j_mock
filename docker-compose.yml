@@ -1,7 +1,7 @@
 version: "3.9"
 services:
-  db_auth:
-    container_name: db_auth
+  dbAuth:
+    container_name: dbAuth
     image: postgres
     environment:
       - POSTGRES_PASSWORD=password
@@ -13,22 +13,22 @@ services:
     ports:
       - "5430:5432"
     restart: always
-  mock_auth:
-    container_name: mock_auth
+  auth:
+    container_name: auth
     build:
       context: ./services/auth
       dockerfile: Dockerfile
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://db_auth:5432/cd_auth
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://dbAuth:5432/cd_auth
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=password
-      - SERVER_NOTIFICATION=http://notification:9920
+      - SERVER_NOTIFICATION=http://noti:9920
     ports:
       - "9900:9900"
     depends_on:
-      - db_auth
-  db_desc:
-    container_name: db_desc
+      - dbAuth
+  dbDesc:
+    container_name: dbDesc
     image: postgres
     environment:
       - POSTGRES_PASSWORD=password
@@ -40,22 +40,22 @@ services:
     ports:
         - "5429:5432"
     restart: always
-  mock_desc:
-    container_name: mock_desc
+  desc:
+    container_name: desc
     build:
       context: ./services/desc
       dockerfile: Dockerfile
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://db_desc:5432/cd_desc
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://dbDesc:5432/cd_desc
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=password
-      - SERVER_NOTIFICATION=http://notification:9920
+      - SERVER_NOTIFICATION=http://noti:9920
     ports:
       - "9902:9902"
     depends_on:
-      - db_desc
-  db_mock:
-    container_name: db_mock
+      - dbDesc
+  dbMock:
+    container_name: dbMock
     image: postgres
     environment:
       - POSTGRES_PASSWORD=password
@@ -67,22 +67,22 @@ services:
     ports:
       - "5428:5432"
     restart: always
-  mock_mock:
-    container_name: mock_mock
+  mock:
+    container_name: mock
     build:
       context: ./services/mock
       dockerfile: Dockerfile
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://db_mock:5432/mock
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://dbMock:5432/mock
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=password
-      - SERVER_NOTIFICATION=http://localhost:9920
+      - SERVER_NOTIFICATION=http://noti:9920
     ports:
       - "9912:9912"
     depends_on:
-      - db_mock
-  db_noti:
-    container_name: db_noti
+      - dbMock
+  dbNoti:
+    container_name: dbNoti
     image: postgres
     environment:
       - POSTGRES_PASSWORD=password
@@ -94,23 +94,23 @@ services:
     ports:
       - "5427:5432"
     restart: always
-  mock_noti:
-    container_name: mock_noti
+  noti:
+    container_name: noti
     build:
       context: ./services/notification
       dockerfile: Dockerfile
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://db_noti:5432/cd_notification
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://dbNoti:5432/cd_notification
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=password
-      - SERVER_AUTH=http://localhost:9900
-      - SERVER_SITE_URL_LOGIN=http://mock_site:8081/login
+      - SERVER_AUTH=http://auth:9900
+      - SERVER_SITE_URL_LOGIN=http://site:8081/login
     ports:
       - "9920:9920"
     depends_on:
-      - db_noti
-  mock_site:
-    container_name: mock_site
+      - dbNoti
+  site:
+    container_name: site
     build:
       context: ./services/site
       dockerfile: Dockerfile
@@ -119,13 +119,13 @@ services:
     environment:
       - SECURITY_OAUTH2_RESOURCE_USERINFOURI=http://auth:9900/user
       - SECURITY_OAUTH2_TOKENURI=http://auth:9900/oauth/token
-      - SERVER_AUTH=http://auth:9900
       - SERVER_AUTH_PING=http://auth:9900/ping
+      - SERVICE_AUTH=http://auth:9900
       - SERVICE_MOCK=http://mock:9912
       - SERVICE_DESC=http://desc:9902
-      - SERVICE_NOTIFICATION=http://notification:9920
+      - SERVICE_NOTIFICATION=http://noti:9920
     depends_on:
-      - mock_auth
-      - mock_desc
-      - mock_mock
-      - mock_noti
+      - auth
+      - desc
+      - mock
+      - noti

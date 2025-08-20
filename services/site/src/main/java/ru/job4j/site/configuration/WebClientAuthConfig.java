@@ -17,7 +17,7 @@ public class WebClientAuthConfig {
     /**
      * Из app.properties получаем корневой адрес сервиса AUTH
      */
-    @Value("${server.auth}")
+    @Value("${service.auth}")
     private String urlAuth;
 
     @Bean

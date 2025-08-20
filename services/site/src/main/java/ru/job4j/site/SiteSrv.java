@@ -8,7 +8,7 @@ import org.springframework.boot.context.ApplicationPidFileWriter;
 @SpringBootApplication
 @Slf4j
 public class SiteSrv {
-    private static final String SITE = "http://localhost:8080";
+    private static final String SITE = "http://localhost:8081";
 
     public static void main(String[] args) {
         SpringApplication application = new SpringApplication(SiteSrv.class);
